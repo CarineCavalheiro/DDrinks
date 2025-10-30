@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DDrinks - Resultado do Orçamento</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="stylesheet" href="../styles/theme.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+            font-size: 1rem;
+        }
+
+        .pdf-container {
+            background: white;
+            border-radius: 1rem;
+            padding: 3rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            page-break-after: always;
+        }
+
+        .pdf-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 3px solid #dc2626;
+            padding-bottom: 1rem;
+        }
+
+        .pdf-logo {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .pdf-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.25rem;
+        }
+
+        .pdf-subtitle {
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        .client-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 0.75rem;
+        }
+
+        .info-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .info-value {
+            color: #475569;
+            font-size: 1rem;
+        }
+
+        .packages-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #dc2626;
+        }
+
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .package-box {
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            color: white;
+            text-align: center;
+        }
+
+        .package-bronze {
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+        }
+
+        .package-prata {
+            background: linear-gradient(135deg, #C0C0C0 0%, #A9A9A9 100%);
+            color: #0f172a;
+        }
+
+        .package-ouro {
+            background: linear-gradient(135deg, #FFD700 0%, #FFC700 100%);
+            color: #0f172a;
+        }
+
+        .package-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .package-multiplier {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .package-details {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .package-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .drinks-section {
+            margin-bottom: 2rem;
+        }
+
+        .drinks-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+
+        .drinks-table th {
+            background: #f8fafc;
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            color: #0f172a;
+            border-bottom: 2px solid #dc2626;
+        }
+
+        .drinks-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+            color: #475569;
+        }
+
+        .drinks-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .summary-box {
+            background: #f8fafc;
+            border-left: 4px solid #dc2626;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            color: #0f172a;
+        }
+
+        .summary-row.total {
+            font-weight: 700;
+            font-size: 1.125rem;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 0.75rem;
+            margin-top: 0.75rem;
+        }
+
+        .summary-label {
+            color: #64748b;
+        }
+
+        .summary-value {
+            font-weight: 600;
+            color: #dc2626;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-error {
+            background-color: #fef2f2;
+            border-color: #dc2626;
+            color: #7f1d1d;
+        }
+
+        .alert-success {
+            background-color: #ecfdf5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+
+        @media (max-width: 768px) {
+            .packages-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .client-info {
+                grid-template-columns: 1fr;
+            }
+
+            .pdf-container {
+                padding: 1.5rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .button-group {
+                display: none;
+            }
+
+            .pdf-container {
+                box-shadow: none;
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">📊 Resultado do Orçamento</h1>
+            <p class="page-subtitle">Visualize e exporte os três pacotes em PDF</p>
+        </div>
+
+        <div id="alertContainer"></div>
+
+        <!-- Conteúdo para PDF -->
+        <div id="pdfContent" class="pdf-container">
+            <div class="pdf-header">
+                <div class="pdf-logo">🍹</div>
+                <div class="pdf-title">DDrinks</div>
+                <div class="pdf-subtitle">Sistema de Orçamentos para Bebidas</div>
+            </div>
+
+            <!-- Informações do Cliente -->
+            <div class="client-info">
+                <div class="info-group">
+                    <span class="info-label">Cliente:</span>
+                    <span class="info-value" id="clienteName">-</span>
+                </div>
+                <div class="info-group">
+                    <span class="info-label">Telefone:</span>
+                    <span class="info-value" id="clientePhone">-</span>
+                </div>
+                <div class="info-group">
+                    <span class="info-label">Cidade:</span>
+                    <span class="info-value" id="clienteCity">-</span>
+                </div>
+                <div class="info-group">
+                    <span class="info-label">Data do Evento:</span>
+                    <span class="info-value" id="eventDate">-</span>
+                </div>
+                <div class="info-group">
+                    <span class="info-label">Quantidade de Convidados:</span>
+                    <span class="info-value" id="guestCount">-</span>
+                </div>
+                <div class="info-group">
+                    <span class="info-label">Descrição:</span>
+                    <span class="info-value" id="eventDescription">-</span>
+                </div>
+            </div>
+
+            <!-- Drinks Selecionados -->
+            <div class="drinks-section">
+                <h2 class="section-title">🍷 Drinks Selecionados</h2>
+                <table class="drinks-table">
+                    <thead>
+                        <tr>
+                            <th>Drink</th>
+                            <th>Quantidade</th>
+                            <th>Preço Unitário</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="drinksTableBody">
+                        <!-- Drinks serão inseridos aqui -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Resumo de Valores -->
+            <div class="summary-box">
+                <div class="summary-row">
+                    <span class="summary-label">Valor Base (por pessoa):</span>
+                    <span class="summary-value" id="baseValue">R$ 0,00</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Valor Total Drinks:</span>
+                    <span class="summary-value" id="drinksValue">R$ 0,00</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Subtotal:</span>
+                    <span class="summary-value" id="subtotal">R$ 0,00</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Taxa de Serviço:</span>
+                    <span class="summary-value" id="taxaValue">R$ 0,00</span>
+                </div>
+            </div>
+
+            <!-- Pacotes -->
+            <div class="packages-section">
+                <h2 class="section-title">💰 Pacotes Disponíveis</h2>
+                <div class="packages-grid">
+                    <div class="package-box package-bronze">
+                        <div class="package-name">Bronze</div>
+                        <div class="package-multiplier">Multiplicador: 1.0x</div>
+                        <div class="package-details">
+                            <div>Subtotal: <span id="bronzeSubtotal">R$ 0,00</span></div>
+                            <div>Taxa: <span id="bronzeTaxa">R$ 0,00</span></div>
+                        </div>
+                        <div class="package-value" id="bronzeValue">R$ 0,00</div>
+                    </div>
+
+                    <div class="package-box package-prata">
+                        <div class="package-name">Prata</div>
+                        <div class="package-multiplier">Multiplicador: 1.5x</div>
+                        <div class="package-details">
+                            <div>Subtotal: <span id="prataSubtotal">R$ 0,00</span></div>
+                            <div>Taxa: <span id="prataTaxa">R$ 0,00</span></div>
+                        </div>
+                        <div class="package-value" id="prataValue">R$ 0,00</div>
+                    </div>
+
+                    <div class="package-box package-ouro">
+                        <div class="package-name">Ouro</div>
+                        <div class="package-multiplier">Multiplicador: 2.0x</div>
+                        <div class="package-details">
+                            <div>Subtotal: <span id="ouroSubtotal">R$ 0,00</span></div>
+                            <div>Taxa: <span id="ouroTaxa">R$ 0,00</span></div>
+                        </div>
+                        <div class="package-value" id="ouroValue">R$ 0,00</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem; color: #64748b; font-size: 0.875rem;">
+                <p>Orçamento gerado em <span id="generatedDate">-</span></p>
+                <p>DDrinks © 2025 - Sistema de Orçamentos para Bebidas</p>
+            </div>
+        </div>
+
+        <!-- Botões de Ação -->
+        <div class="button-group">
+            <button class="btn btn-primary" onclick="generatePDF();">📥 Baixar PDF</button>
+            <button class="btn btn-secondary" onclick="window.print();">🖨️ Imprimir</button>
+            <button class="btn btn-secondary" onclick="window.location.href='/orcamento-novo';">➕ Novo Orçamento</button>
+            <button class="btn btn-secondary" onclick="window.location.href='/';">🏠 Dashboard</button>
+        </div>
+    </div>
+
+    <script>
+        // Formatar valor em moeda
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(value);
+        }
+
+        // Formatar data
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return new Intl.DateTimeFormat('pt-BR', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            }).format(date);
+        }
+
+        // Carregar dados do orçamento
+        async function loadOrcamento() {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+
+            if (!id) {
+                showAlert('ID do orçamento não fornecido', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/orcamentos/${id}`, {
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Erro ao carregar orçamento');
+                }
+
+                const orcamento = data.orcamento;
+                displayOrcamento(orcamento);
+
+            } catch (error) {
+                showAlert(error.message || 'Erro ao carregar orçamento', 'error');
+            }
+        }
+
+        // Exibir orçamento
+        function displayOrcamento(orcamento) {
+            // Informações do cliente
+            document.getElementById('clienteName').textContent = orcamento.cliente;
+            document.getElementById('clientePhone').textContent = orcamento.telefone;
+            document.getElementById('clienteCity').textContent = orcamento.cidade;
+            document.getElementById('eventDate').textContent = formatDate(orcamento.data_evento);
+            document.getElementById('guestCount').textContent = orcamento.quantidade_convidados;
+            document.getElementById('eventDescription').textContent = orcamento.descricao || '-';
+            document.getElementById('generatedDate').textContent = formatDate(new Date());
+
+            // Drinks
+            const drinks = JSON.parse(orcamento.drinks || '[]');
+            displayDrinks(drinks);
+
+            // Cálculos
+            calculateAndDisplay(orcamento.quantidade_convidados, drinks, orcamento.taxa_servico || 0);
+        }
+
+        // Exibir drinks
+        function displayDrinks(drinks) {
+            const tbody = document.getElementById('drinksTableBody');
+            tbody.innerHTML = '';
+
+            drinks.forEach(drink => {
+                const row = document.createElement('tr');
+                const subtotal = drink.preco * drink.quantidade;
+                row.innerHTML = `
+                    <td>${drink.name || `Drink ${drink.id}`}</td>
+                    <td>${drink.quantidade}</td>
+                    <td>${formatCurrency(drink.preco)}</td>
+                    <td>${formatCurrency(subtotal)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Calcular e exibir valores
+        function calculateAndDisplay(quantidade, drinks, taxaServico) {
+            const valorPorPessoa = 50;
+            const baseValue = quantidade * valorPorPessoa;
+
+            let drinksValue = 0;
+            drinks.forEach(drink => {
+                drinksValue += drink.preco * drink.quantidade;
+            });
+
+            const subtotal = baseValue + drinksValue;
+            const taxa = subtotal * (taxaServico / 100);
+
+            // Calcular pacotes
+            const bronzeSubtotal = subtotal * 1.0;
+            const bronzeTaxa = bronzeSubtotal * (taxaServico / 100);
+            const bronzeTotal = bronzeSubtotal + bronzeTaxa;
+
+            const prataSubtotal = subtotal * 1.5;
+            const prataTaxa = prataSubtotal * (taxaServico / 100);
+            const prataTotal = prataSubtotal + prataTaxa;
+
+            const ouroSubtotal = subtotal * 2.0;
+            const ouroTaxa = ouroSubtotal * (taxaServico / 100);
+            const ouroTotal = ouroSubtotal + ouroTaxa;
+
+            // Atualizar display
+            document.getElementById('baseValue').textContent = formatCurrency(baseValue);
+            document.getElementById('drinksValue').textContent = formatCurrency(drinksValue);
+            document.getElementById('subtotal').textContent = formatCurrency(subtotal);
+            document.getElementById('taxaValue').textContent = formatCurrency(taxa);
+
+            document.getElementById('bronzeSubtotal').textContent = formatCurrency(bronzeSubtotal);
+            document.getElementById('bronzeTaxa').textContent = formatCurrency(bronzeTaxa);
+            document.getElementById('bronzeValue').textContent = formatCurrency(bronzeTotal);
+
+            document.getElementById('prataSubtotal').textContent = formatCurrency(prataSubtotal);
+            document.getElementById('prataTaxa').textContent = formatCurrency(prataTaxa);
+            document.getElementById('prataValue').textContent = formatCurrency(prataTotal);
+
+            document.getElementById('ouroSubtotal').textContent = formatCurrency(ouroSubtotal);
+            document.getElementById('ouroTaxa').textContent = formatCurrency(ouroTaxa);
+            document.getElementById('ouroValue').textContent = formatCurrency(ouroTotal);
+        }
+
+        // Gerar PDF
+        function generatePDF() {
+            const element = document.getElementById('pdfContent');
+            const opt = {
+                margin: 10,
+                filename: 'orcamento-ddrinks.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+            };
+
+            html2pdf().set(opt).from(element).save();
+        }
+
+        // Mostrar alerta
+        function showAlert(message, type) {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} show`;
+            alert.textContent = message;
+            
+            container.innerHTML = '';
+            container.appendChild(alert);
+
+            if (type === 'success') {
+                setTimeout(() => alert.remove(), 3000);
+            }
+        }
+
+        // Carregar dados ao abrir a página
+        window.addEventListener('load', loadOrcamento);
+    </script>
+</body>
+</html>
+

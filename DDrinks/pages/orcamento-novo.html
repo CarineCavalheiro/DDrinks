@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DDrinks - Novo Orçamento</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/theme.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+            font-size: 1rem;
+        }
+
+        .form-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-section {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #dc2626;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #0f172a;
+            font-size: 0.875rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .drinks-list {
+            background: #f8fafc;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .drink-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: white;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .drink-item input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .drink-info {
+            flex: 1;
+        }
+
+        .drink-name {
+            font-weight: 500;
+            color: #0f172a;
+        }
+
+        .drink-price {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .drink-quantity {
+            width: 60px;
+            padding: 0.375rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            text-align: center;
+        }
+
+        .preview-section {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .package-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .package-card {
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            color: white;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .package-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .package-bronze {
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+        }
+
+        .package-prata {
+            background: linear-gradient(135deg, #C0C0C0 0%, #A9A9A9 100%);
+            color: #0f172a;
+        }
+
+        .package-ouro {
+            background: linear-gradient(135deg, #FFD700 0%, #FFC700 100%);
+            color: #0f172a;
+        }
+
+        .package-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .package-multiplier {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .package-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .package-details {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+
+        .summary-box {
+            background: #f8fafc;
+            border-left: 4px solid #dc2626;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            color: #0f172a;
+        }
+
+        .summary-row.total {
+            font-weight: 700;
+            font-size: 1.125rem;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 0.75rem;
+            margin-top: 0.75rem;
+        }
+
+        .summary-label {
+            color: #64748b;
+        }
+
+        .summary-value {
+            font-weight: 600;
+            color: #dc2626;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-error {
+            background-color: #fef2f2;
+            border-color: #dc2626;
+            color: #7f1d1d;
+        }
+
+        .alert-success {
+            background-color: #ecfdf5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+
+        @media (max-width: 768px) {
+            .form-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .package-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">🍹 Novo Orçamento</h1>
+            <p class="page-subtitle">Selecione os drinks e dados do evento para gerar orçamentos dos três pacotes</p>
+        </div>
+
+        <div id="alertContainer"></div>
+
+        <div class="form-wrapper">
+            <!-- Seção de Dados do Evento -->
+            <div class="form-section">
+                <h2 class="section-title">📋 Dados do Evento</h2>
+
+                <form id="eventForm">
+                    <div class="form-group">
+                        <label for="cliente">Nome do Cliente *</label>
+                        <input type="text" id="cliente" name="cliente" placeholder="Ex: João Silva" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="telefone">Telefone *</label>
+                        <input type="tel" id="telefone" name="telefone" placeholder="(11) 98765-4321" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cidade">Cidade *</label>
+                        <input type="text" id="cidade" name="cidade" placeholder="São Paulo" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dataEvento">Data do Evento *</label>
+                        <input type="date" id="dataEvento" name="dataEvento" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quantidade">Quantidade de Convidados *</label>
+                        <input type="number" id="quantidade" name="quantidade" min="1" placeholder="50" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descricao">Descrição do Evento</label>
+                        <textarea id="descricao" name="descricao" placeholder="Descreva o tipo de evento..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="taxaServico">Taxa de Serviço (%)</label>
+                        <input type="number" id="taxaServico" name="taxaServico" min="0" max="100" placeholder="10" value="0">
+                    </div>
+                </form>
+            </div>
+
+            <!-- Seção de Seleção de Drinks -->
+            <div class="form-section">
+                <h2 class="section-title">🍷 Seleção de Drinks</h2>
+
+                <div class="drinks-list" id="drinksList">
+                    <!-- Drinks serão carregados aqui via JavaScript -->
+                </div>
+
+                <button class="btn btn-secondary" onclick="loadDrinks()" style="width: 100%;">
+                    Carregar Drinks
+                </button>
+            </div>
+        </div>
+
+        <!-- Seção de Preview e Pacotes -->
+        <div class="preview-section">
+            <h2 class="section-title">💰 Resumo dos Pacotes</h2>
+
+            <div class="summary-box">
+                <div class="summary-row">
+                    <span class="summary-label">Valor Base (por pessoa):</span>
+                    <span class="summary-value" id="baseValue">R$ 0,00</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Valor Drinks:</span>
+                    <span class="summary-value" id="drinksValue">R$ 0,00</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Subtotal:</span>
+                    <span class="summary-value" id="subtotal">R$ 0,00</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Taxa de Serviço:</span>
+                    <span class="summary-value" id="taxaValue">R$ 0,00</span>
+                </div>
+            </div>
+
+            <div class="package-cards">
+                <div class="package-card package-bronze">
+                    <div class="package-name">Bronze</div>
+                    <div class="package-multiplier">Multiplicador: 1.0x</div>
+                    <div class="package-value" id="bronzeValue">R$ 0,00</div>
+                    <div class="package-details">Pacote básico</div>
+                </div>
+
+                <div class="package-card package-prata">
+                    <div class="package-name">Prata</div>
+                    <div class="package-multiplier">Multiplicador: 1.5x</div>
+                    <div class="package-value" id="prataValue">R$ 0,00</div>
+                    <div class="package-details">Pacote intermediário</div>
+                </div>
+
+                <div class="package-card package-ouro">
+                    <div class="package-name">Ouro</div>
+                    <div class="package-multiplier">Multiplicador: 2.0x</div>
+                    <div class="package-value" id="ouroValue">R$ 0,00</div>
+                    <div class="package-details">Pacote premium</div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-secondary" onclick="window.history.back();">Cancelar</button>
+                <button class="btn btn-primary" onclick="submitOrcamento();">Gerar PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Drinks padrão (pode ser carregado do servidor)
+        const defaultDrinks = [
+            { id: 1, name: 'Água', preco: 5 },
+            { id: 2, name: 'Refrigerante', preco: 8 },
+            { id: 3, name: 'Suco Natural', preco: 12 },
+            { id: 4, name: 'Cerveja Premium', preco: 15 },
+            { id: 5, name: 'Vinho Tinto', preco: 25 },
+            { id: 6, name: 'Vinho Branco', preco: 25 },
+            { id: 7, name: 'Espumante', preco: 30 },
+            { id: 8, name: 'Chopp', preco: 12 },
+            { id: 9, name: 'Coquetel Clássico', preco: 20 },
+            { id: 10, name: 'Coquetel Premium', preco: 30 }
+        ];
+
+        // Carregar drinks na lista
+        function loadDrinks() {
+            const drinksList = document.getElementById('drinksList');
+            drinksList.innerHTML = '';
+
+            defaultDrinks.forEach(drink => {
+                const drinkItem = document.createElement('div');
+                drinkItem.className = 'drink-item';
+                drinkItem.innerHTML = `
+                    <input type="checkbox" class="drink-checkbox" data-drink-id="${drink.id}" data-price="${drink.preco}">
+                    <div class="drink-info">
+                        <div class="drink-name">${drink.name}</div>
+                        <div class="drink-price">R$ ${drink.preco.toFixed(2)}</div>
+                    </div>
+                    <input type="number" class="drink-quantity" value="1" min="1" data-drink-id="${drink.id}">
+                `;
+                drinksList.appendChild(drinkItem);
+            });
+
+            // Adicionar listeners para atualizar cálculo
+            document.querySelectorAll('.drink-checkbox, .drink-quantity').forEach(el => {
+                el.addEventListener('change', updateCalculation);
+                el.addEventListener('input', updateCalculation);
+            });
+
+            document.getElementById('quantidade').addEventListener('input', updateCalculation);
+            document.getElementById('taxaServico').addEventListener('input', updateCalculation);
+        }
+
+        // Atualizar cálculo dos pacotes
+        function updateCalculation() {
+            const quantidade = parseInt(document.getElementById('quantidade').value) || 0;
+            const taxaServico = parseFloat(document.getElementById('taxaServico').value) || 0;
+
+            // Calcular valor base
+            const valorPorPessoa = 50;
+            const baseValue = quantidade * valorPorPessoa;
+
+            // Calcular valor dos drinks
+            let drinksValue = 0;
+            document.querySelectorAll('.drink-checkbox:checked').forEach(checkbox => {
+                const drinkId = checkbox.getAttribute('data-drink-id');
+                const preco = parseFloat(checkbox.getAttribute('data-price'));
+                const quantityInput = document.querySelector(`.drink-quantity[data-drink-id="${drinkId}"]`);
+                const quantity = parseInt(quantityInput.value) || 1;
+                drinksValue += preco * quantity;
+            });
+
+            const subtotal = baseValue + drinksValue;
+            const taxa = subtotal * (taxaServico / 100);
+
+            // Calcular pacotes
+            const bronzeTotal = (subtotal * 1.0) + ((subtotal * 1.0) * (taxaServico / 100));
+            const prataTotal = (subtotal * 1.5) + ((subtotal * 1.5) * (taxaServico / 100));
+            const ouroTotal = (subtotal * 2.0) + ((subtotal * 2.0) * (taxaServico / 100));
+
+            // Atualizar display
+            document.getElementById('baseValue').textContent = formatCurrency(baseValue);
+            document.getElementById('drinksValue').textContent = formatCurrency(drinksValue);
+            document.getElementById('subtotal').textContent = formatCurrency(subtotal);
+            document.getElementById('taxaValue').textContent = formatCurrency(taxa);
+            document.getElementById('bronzeValue').textContent = formatCurrency(bronzeTotal);
+            document.getElementById('prataValue').textContent = formatCurrency(prataTotal);
+            document.getElementById('ouroValue').textContent = formatCurrency(ouroTotal);
+        }
+
+        // Formatar valor em moeda
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(value);
+        }
+
+        // Submeter orçamento
+        async function submitOrcamento() {
+            const cliente = document.getElementById('cliente').value;
+            const telefone = document.getElementById('telefone').value;
+            const cidade = document.getElementById('cidade').value;
+            const dataEvento = document.getElementById('dataEvento').value;
+            const quantidade = document.getElementById('quantidade').value;
+            const descricao = document.getElementById('descricao').value;
+            const taxaServico = document.getElementById('taxaServico').value;
+
+            // Validação básica
+            if (!cliente || !telefone || !cidade || !dataEvento || !quantidade) {
+                showAlert('Por favor, preencha todos os campos obrigatórios', 'error');
+                return;
+            }
+
+            // Coletar drinks selecionados
+            const drinks = [];
+            document.querySelectorAll('.drink-checkbox:checked').forEach(checkbox => {
+                const drinkId = checkbox.getAttribute('data-drink-id');
+                const preco = parseFloat(checkbox.getAttribute('data-price'));
+                const quantityInput = document.querySelector(`.drink-quantity[data-drink-id="${drinkId}"]`);
+                const quantity = parseInt(quantityInput.value) || 1;
+                
+                drinks.push({
+                    id: drinkId,
+                    preco,
+                    quantidade: quantity
+                });
+            });
+
+            if (drinks.length === 0) {
+                showAlert('Selecione pelo menos um drink', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/orcamentos', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        cliente,
+                        telefone,
+                        cidade,
+                        data_evento: dataEvento,
+                        quantidade_convidados: parseInt(quantidade),
+                        descricao,
+                        taxa_servico: parseFloat(taxaServico),
+                        drinks
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Erro ao criar orçamento');
+                }
+
+                showAlert('Orçamento criado com sucesso!', 'success');
+                
+                // Redirecionar para página de resultado com ID do orçamento
+                setTimeout(() => {
+                    window.location.href = `/resultado?id=${data.orcamento.id}`;
+                }, 1500);
+
+            } catch (error) {
+                showAlert(error.message || 'Erro ao criar orçamento', 'error');
+            }
+        }
+
+        // Mostrar alerta
+        function showAlert(message, type) {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} show`;
+            alert.textContent = message;
+            
+            container.innerHTML = '';
+            container.appendChild(alert);
+
+            if (type === 'success') {
+                setTimeout(() => alert.remove(), 3000);
+            }
+        }
+
+        // Carregar drinks ao abrir a página
+        window.addEventListener('load', () => {
+            loadDrinks();
+            updateCalculation();
+        });
+    </script>
+</body>
+</html>
+

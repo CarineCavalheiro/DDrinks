@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orçamento - Resultado 🍸</title>
+
+<!-- Bibliotecas -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+
+<style>
+body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    background: #ffffff;
+    margin: 0; 
+    padding: 0;
+    min-height: 100vh;
+}
+
+.container { 
+    max-width: 1000px; 
+    margin: 20px auto; 
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 30px; 
+    border-radius: 20px; 
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1), 0 0 0 1px rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    animation: fadeInUp 0.8s ease-out;
+}
+
+h1 {
+    text-align: center;
+    color: #2c3e50;
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    background: linear-gradient(45deg, #d4170a, #e74c3c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.resultado {
+    background: linear-gradient(145deg, #e9ffe9, #f0fff0);
+    padding: 25px;
+    border: 2px solid #d4170a;
+    border-radius: 15px;
+    margin: 20px 0;
+    box-shadow: 0 10px 30px rgba(212, 23, 10, 0.1);
+    position: relative;
+}
+
+.resultado::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(45deg, #d4170a, #e74c3c);
+    border-radius: 15px 15px 0 0;
+}
+
+.resultado h3 {
+    margin-top: 0;
+    color: #155724;
+    font-size: 1.5em;
+    text-align: center;
+    border-bottom: 2px solid #d4170a;
+    padding-bottom: 10px;
+}
+
+button, .nav-btn {
+    display: block;
+    width: 100%;
+    background: linear-gradient(45deg, #d4170a, #e74c3c);
+    color: white;
+    padding: 15px 20px;
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 20px 0;
+    box-shadow: 0 8px 25px rgba(212, 23, 10, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+button:hover::before {
+    left: 100%;
+}
+
+button:hover {
+    background: linear-gradient(45deg, #272625, #2c3e50);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.2);
+}
+
+.btn-voltar {
+    background: linear-gradient(45deg, #6c757d, #495057);
+}
+
+.btn-voltar:hover {
+    background: linear-gradient(45deg, #495057, #343a40);
+}
+
+.navigation {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.nav-btn {
+    display: inline-block;
+    background: linear-gradient(45deg, #d4170a, #e74c3c);
+    color: white;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 5px;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(212, 23, 10, 0.3);
+}
+
+.nav-btn:hover {
+    background: linear-gradient(45deg, #272625, #2c3e50);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.btn-logout {
+    background: linear-gradient(45deg, #6c757d, #495057);
+}
+
+.btn-logout:hover {
+    background: linear-gradient(45deg, #495057, #343a40);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <header style="display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:12px;">
+        <a href="#" class="app-logo-link" aria-label="DDrinks - Início" onclick="voltarInicio();return false;">
+            <div style="font-weight:700;color:#d4170a;font-size:20px;">DDrinks</div>
+        </a>
+    </header>
+
+    <h1>Orçamento de Drinks</h1>
+
+    <div class="navigation">
+        <button class="btn-voltar" onclick="voltarInicio()">← Voltar ao Início</button>
+        <a href="agenda.html" class="nav-btn">Agenda de Eventos</a>
+        <a href="datas.html" class="nav-btn">Calendário</a>
+        <button onclick="logout()" class="nav-btn btn-logout">Sair</button>
+    </div>
+
+    <div id="orcamento"></div>
+
+    <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <button onclick="gerarPDF()" style="flex: 1;">Gerar PDF</button>
+        <button onclick="irParaAgenda()" style="flex: 1; background: linear-gradient(45deg, #27ae60, #2ecc71);">Ver na Agenda</button>
+    </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://mobotbmftmfbzwuagdac.supabase.co';
+// Chave de segurança: idealmente via backend ou variável de ambiente
+const SUPABASE_KEY = ''; // NÃO DEIXAR CHAVE EXPERTA NO FRONT
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const precosPacotes = {
+  bronze: { caipirinha:10, mojito:3, sex_on_the_beach:8, gin_tonica:6, moscow_mule:5, gim_tropical:6, negroni:10, aperol_spritz:13, whisky_sour:6, cosmopolitan:6, caipirinha_morango:8, caipirinha_limao:4, pina_colada:6, alexander:13, tequila_sour:17, pink_lady:15 },
+  prata: { caipirinha:25, mojito:7.5, sex_on_the_beach:20, gin_tonica:15, moscow_mule:12.5, gim_tropical:15, negroni:25, aperol_spritz:32.5, whisky_sour:15, cosmopolitan:15, caipirinha_morango:20, caipirinha_limao:10, pina_colada:15, alexander:32.5, tequila_sour:42.5, pink_lady:37.5 },
+  ouro: { caipirinha:30, mojito:9, sex_on_the_beach:24, gin_tonica:18, moscow_mule:15, gim_tropical:18, negroni:30, aperol_spritz:39, whisky_sour:18, cosmopolitan:18, caipirinha_morango:24, caipirinha_limao:12, pina_colada:18, alexander:39, tequila_sour:51, pink_lady:45 }
+};
+
+// Funções de navegação
+function voltarInicio() { window.location.href = 'index.html'; }
+function irParaAgenda() { window.location.href = 'agenda.html'; }
+function formatarData(dataISO) { if (!dataISO) return ''; const [ano, mes, dia] = dataISO.split('-'); return `${dia}/${mes}/${ano}`; }
+
+// Logout
+function logout() {
+    supabase.auth.signOut().then(() => window.location.href = "login.html");
+}
+
+// Exibir orçamento
+async function mostrarOrcamento() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) {
+    document.getElementById('orcamento').innerHTML = '<div class="resultado"><h3>Você precisa estar logado para ver o orçamento.</h3></div>';
+    return;
+  }
+
+  const { data, error } = await supabase.from('orcamentos').select('*').order('dataCriacao', { ascending: false }).limit(1);
+  if (error || !data || data.length === 0) {
+    document.getElementById('orcamento').innerHTML = '<div class="resultado"><h3>Nenhum dado encontrado</h3><p>Volte ao início e preencha os dados novamente.</p></div>';
+    return;
+  }
+
+  const orcamento = data[0];
+
+  let html = `<div class="resultado">
+    <h3>Informações do Cliente</h3>
+    <p><strong>Nome:</strong> ${orcamento.cliente}</p>
+    <p><strong>Telefone:</strong> ${orcamento.telefone}</p>
+    <p><strong>Cidade:</strong> ${orcamento.cidade}</p>
+    <p><strong>Data do Evento:</strong> ${formatarData(orcamento.data)}</p>
+    <p><strong>Quantidade de Convidados:</strong> ${orcamento.quantidadeConvidados} pessoas</p>
+    <p><strong>Descrição:</strong> ${orcamento.descricao}</p>
+    ${orcamento.incluirTaxaServico ? '<p style="color: #d4170a; font-weight: bold;">Taxa de Serviço (40%) incluída</p>' : ''}
+  </div>`;
+
+  html += `<div class="resultado">
+    <h3>Resumo do Orçamento</h3>
+    <p><strong>Valor Base:</strong> R$ ${Number(orcamento.valorBase).toFixed(2)}</p>
+    <p><strong>Taxa de Serviço:</strong> R$ ${Number(orcamento.taxaServico).toFixed(2)}</p>
+    <p style="font-size: 18px; font-weight: bold; color: #d4170a;"><strong>Total:</strong> R$ ${Number(orcamento.valor).toFixed(2)}</p>
+  </div>`;
+
+  document.getElementById('orcamento').innerHTML = html;
+
+  // Salva para PDF
+  sessionStorage.setItem('orcamentoDados', JSON.stringify(orcamento.itens || {}));
+  sessionStorage.setItem('clienteInfo', JSON.stringify(orcamento));
+}
+
+// PDF com quantidade e preço
+async function gerarPDF() {
+    const { jsPDF } = window.jspdf;
+    const dados = JSON.parse(sessionStorage.getItem('orcamentoDados'));
+    const clienteInfo = JSON.parse(sessionStorage.getItem('clienteInfo'));
+    if (!dados || !clienteInfo) { alert('Nenhum dado disponível para PDF.'); return; }
+
+    // Exibir loading
+    const btn = event.target; btn.disabled = true; btn.textContent = 'Gerando PDF...';
+
+    let htmlPDF = `<div style="font-family: Arial, sans-serif; max-width:800px; margin:0 auto; background:#000; padding:30px; color:white;">
+        <h1 style="color:#d4170a;">🍸 DDrinks</h1>
+        <h2>Orçamento para Evento</h2>
+        <p>Data: ${new Date().toLocaleDateString('pt-BR')}</p>
+        <h3>👤 Cliente</h3>
+        <p>Nome: ${clienteInfo.cliente}</p>
+        <p>Telefone: ${clienteInfo.telefone}</p>
+        <p>Cidade: ${clienteInfo.cidade}</p>
+        <p>Data Evento: ${formatarData(clienteInfo.data)}</p>
+        <p>Convidados: ${clienteInfo.quantidadeConvidados}</p>
+        <p>Descrição: ${clienteInfo.descricao}</p>
+        <h3>🍹 Drinks Selecionados</h3>`;
+
+    Object.keys(dados).forEach(id => {
+        const quantidade = dados[id];
+        if (quantidade > 0) {
+            const nome = id.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+            htmlPDF += `<p>${nome} - Quantidade: ${quantidade}</p>`;
+        }
+    });
+
+    htmlPDF += `<h3>💰 Total Pacotes</h3>`;
+    ['bronze','prata','ouro'].forEach(pacote=>{
+        let total = 0;
+        Object.keys(dados).forEach(id=>{
+            const quantidade = dados[id];
+            const preco = precosPacotes[pacote][id]||0;
+            total += quantidade*preco;
+        });
+        const taxa = clienteInfo.incluirTaxaServico ? total*0.4 : 0;
+        const totalFinal = total + taxa;
+        htmlPDF += `<p>${pacote.charAt(0).toUpperCase()+pacote.slice(1)}: R$ ${totalFinal.toFixed(2)} ${clienteInfo.incluirTaxaServico?'(inclui 40% taxa)':''}</p>`;
+    });
+
+    htmlPDF += `</div>`;
+
+    // Cria tempDiv
+    const tempDiv = document.createElement('div');
+    tempDiv.style.position = 'absolute';
+    tempDiv.style.left='-9999px';
+    tempDiv.innerHTML = htmlPDF;
+    document.body.appendChild(tempDiv);
+
+    html2canvas(tempDiv,{scale:2, useCORS:true}).then(canvas=>{
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p','mm','a4');
+        const imgWidth = 210;
+        const pageHeight = 295;
+        const imgHeight = (canvas.height * imgWidth)/canvas.width;
+        let heightLeft = imgHeight;
+        let position = 0;
+        pdf.addImage(imgData,'PNG',0,position,imgWidth,imgHeight);
+        heightLeft -= pageHeight;
+        while(heightLeft>=0){
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData,'PNG',0,position,imgWidth,imgHeight);
+            heightLeft -= pageHeight;
+        }
+        pdf.save(`orcamento_drinks_${new Date().toISOString().split('T')[0]}.pdf`);
+        document.body.removeChild(tempDiv);
+        btn.disabled = false; btn.textContent = 'Gerar PDF';
+    }).catch(err=>{
+        console.error(err); alert('Erro ao gerar PDF.');
+        document.body.removeChild(tempDiv);
+        btn.disabled = false; btn.textContent = 'Gerar PDF';
+    });
+}
+
+// Inicializa
+mostrarOrcamento();
+</script>
+</body>
+</html>
